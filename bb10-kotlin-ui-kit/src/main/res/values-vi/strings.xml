@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bb10_navigation_menu">Menu</string>
+    <string name="bb10_more_actions">Thêm</string>
+    <string name="bb10_back">Quay lại</string>
+    <string name="bb10_cancel">Hủy</string>
+    <string name="bb10_search">Tìm kiếm</string>
+    <string name="bb10_show_password">Hiện mật khẩu</string>
+    <string name="bb10_hide_password">Ẩn mật khẩu</string>
+    <string name="bb10_clear_text">Xóa nội dung</string>
+    <string name="bb10_required">bắt buộc</string>
+    <string name="bb10_expanded">Đã mở</string>
+    <string name="bb10_collapsed">Đã đóng</string>
+    <string name="bb10_character_counter">%1$d/%2$d</string>
+
+    <string name="bb10_ok">Đồng ý</string>
+    <string name="bb10_today">Hôm nay</string>
+    <string name="bb10_day">Ngày</string>
+    <string name="bb10_month">Tháng</string>
+    <string name="bb10_year">Năm</string>
+    <string name="bb10_hour">Giờ</string>
+    <string name="bb10_minute">Phút</string>
+    <string name="bb10_date_pattern">%1$d %2$s, %3$d</string>
+    <string name="bb10_time_24h_pattern">%1$02d:%2$02d</string>
+    <string name="bb10_time_12h_pattern">%1$d:%2$02d %3$s</string>
+
+    <string-array name="bb10_months">
+        <item>tháng một</item><item>tháng hai</item><item>tháng ba</item><item>tháng tư</item>
+        <item>tháng năm</item><item>tháng sáu</item><item>tháng bảy</item><item>tháng tám</item>
+        <item>tháng chín</item><item>tháng mười</item><item>tháng mười một</item><item>tháng mười hai</item>
+    </string-array>
+    <string-array name="bb10_weekdays">
+        <item>Thứ hai</item><item>Thứ ba</item><item>Thứ tư</item><item>Thứ năm</item>
+        <item>Thứ sáu</item><item>Thứ bảy</item><item>Chủ nhật</item>
+    </string-array>
+    <string-array name="bb10_am_pm">
+        <item>SA</item><item>CH</item>
+    </string-array>
+
+    <string name="bb10_display_size">Cỡ hiển thị</string>
+    <string name="bb10_scale_small">Nhỏ</string>
+    <string name="bb10_scale_normal">Vừa</string>
+    <string name="bb10_scale_large">Lớn</string>
+    <string name="bb10_scale_extra_large">Rất lớn</string>
+    <string name="bb10_scale_huge">Cực lớn</string>
+</resources>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Texts the kit puts on screen or in the accessibility tree itself. -->
+    <string name="bb10_navigation_menu">Menu</string>
+    <string name="bb10_more_actions">More</string>
+    <string name="bb10_back">Back</string>
+    <string name="bb10_cancel">Cancel</string>
+    <string name="bb10_search">Search</string>
+    <string name="bb10_show_password">Show password</string>
+    <string name="bb10_hide_password">Hide password</string>
+    <string name="bb10_clear_text">Clear</string>
+    <string name="bb10_required">required</string>
+    <string name="bb10_expanded">Expanded</string>
+    <string name="bb10_collapsed">Collapsed</string>
+    <string name="bb10_character_counter">%1$d/%2$d</string>
+
+    <string name="bb10_ok">OK</string>
+    <string name="bb10_today">Today</string>
+    <string name="bb10_day">Day</string>
+    <string name="bb10_month">Month</string>
+    <string name="bb10_year">Year</string>
+    <string name="bb10_hour">Hour</string>
+    <string name="bb10_minute">Minute</string>
+    <string name="bb10_date_pattern">%2$s %1$d, %3$d</string>
+    <string name="bb10_time_24h_pattern">%1$02d:%2$02d</string>
+    <string name="bb10_time_12h_pattern">%1$d:%2$02d %3$s</string>
+
+    <string-array name="bb10_months">
+        <item>January</item><item>February</item><item>March</item><item>April</item>
+        <item>May</item><item>June</item><item>July</item><item>August</item>
+        <item>September</item><item>October</item><item>November</item><item>December</item>
+    </string-array>
+    <!-- Monday first, like java.time.DayOfWeek -->
+    <string-array name="bb10_weekdays">
+        <item>Monday</item><item>Tuesday</item><item>Wednesday</item><item>Thursday</item>
+        <item>Friday</item><item>Saturday</item><item>Sunday</item>
+    </string-array>
+    <!-- AM, PM -->
+    <string-array name="bb10_am_pm">
+        <item>AM</item><item>PM</item>
+    </string-array>
+
+    <!-- Display size setting -->
+    <string name="bb10_display_size">Display size</string>
+    <string name="bb10_scale_small">Small</string>
+    <string name="bb10_scale_normal">Normal</string>
+    <string name="bb10_scale_large">Large</string>
+    <string name="bb10_scale_extra_large">Extra large</string>
+    <string name="bb10_scale_huge">Huge</string>
+</resources>
