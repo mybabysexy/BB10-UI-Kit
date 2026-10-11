@@ -9,6 +9,17 @@ Design system Jetpack Compose lấy cảm hứng từ giao diện BlackBerry 10.
 
 Quy tắc thiết kế của từng component nằm trong [DESIGN.md](DESIGN.md).
 
+## Ảnh chụp
+
+Chụp từ app demo trên máy thật (720x720, giao diện tối, tiếng Việt).
+
+| | | |
+|---|---|---|
+| ![Hộp thư](docs/screenshots/01-hub.png) | ![Menu điều hướng](docs/screenshots/02-navigation.png) | ![Menu phải](docs/screenshots/06-menu.png) |
+| Hộp thư: tab, header dính, primary ở giữa bottom bar | Menu điều hướng đẩy app sang phải | Menu phải với gợi ý phím tắt |
+| ![Cài đặt](docs/screenshots/03-settings.png) | ![Dropdown, picker, checkbox](docs/screenshots/04-settings-more.png) | ![Ô nhập](docs/screenshots/05-settings-forms.png) |
+| Cỡ hiển thị, dropdown, slider và stepper | Dropdown ngày giờ, nút, checkbox | Ô nhập: bắt buộc, mật khẩu, bộ đếm |
+
 ## Có gì trong kit
 
 | Nhóm | Component |
