@@ -60,7 +60,9 @@ fun Bb10ScalePicker(
                     Modifier
                         .weight(1f)
                         .height(d.touchHeight + 8.dp)
-                        .background(if (isSelected) c.accent else c.field)
+                        .then(
+                            if (isSelected) Modifier.background(c.accentBrush) else Modifier.background(c.field)
+                        )
                         .bb10Clickable(
                             role = Role.RadioButton,
                             highlight = highlight,

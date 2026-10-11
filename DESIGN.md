@@ -27,9 +27,13 @@ Tài liệu này mô tả cách mỗi component trong kit phải trông và ho�
 | `textSecondary` | `#A6A6A6` | `#6E6E6E` |
 | `textDisabled` | `#666666` | `#B0B0B0` |
 | `error` | `#FF5A5F` | `#D9363E` |
-| `focusFill` | `accent` pha 22% đen | `accent` pha 22% đen |
-| `pressedFill` | `accent` pha 36% đen | `accent` pha 36% đen |
+| `accentTop` → `accentBottom` | `#0080B2` → `#008FC9` | giống dark |
+| `selectionTop` → `selectionBottom` | `#087098` → `#065F81` | giống dark |
+| `focusFill` | `#087099` (phẳng) | giống dark |
+| `pressedFill` | `#065F81` (phẳng) | giống dark |
 | `scrim` | đen 60% | đen 40% |
+
+**Phần tử tô màu accent không phẳng mà là gradient dọc** (trên → dưới): nút công tắc bật, ô checkbox đã chọn, nút primary / nút `primary`, thanh dropdown đang mở, nút xác nhận một nút của dialog, ô cỡ đang chọn, vòng tròn primary: `accentTop` → `accentBottom`. Thanh được highlight (thanh dropdown, nút, tab, ô trong bottom bar) dùng gradient `selectionTop` → `selectionBottom`. **Dòng** được highlight hoặc đang chọn (list item, mục menu, lựa chọn trong dropdown, mục menu điều hướng) dùng màu phẳng `focusFill`, chữ + icon trắng; lựa chọn đang chọn của dropdown cũng như vậy. Các giá trị trên là mẫu màu của BB10 cho accent mặc định; accent khác được suy ra bằng cách làm tối. Đường kẻ và chữ accent vẫn là màu phẳng `accent`.
 
 `accent` mặc định `#0092CC` (Blue); có sẵn Teal, Green, Orange, Red, Purple trong `Bb10Accents`. `onAccent` luôn là trắng.
 
@@ -167,7 +171,7 @@ Chung: **không có cử chỉ vuốt từ mép trái/phải để mở** (trên
 
 Mọi thứ focus được hoặc bấm được phải đi qua `Modifier.bb10Clickable`. Không dùng `clickable` trực tiếp.
 
-- Focus (highlight bằng d-pad): nền `focusFill`, là **màu accent tối hơn một chút** (như dòng đang highlight trong menu BB10), đặc, thay cho nền của chính phần tử, ở cả dark lẫn light. **Chữ và icon trong phần tử đó chuyển sang trắng** (`onAccent`). **Không vẽ viền (outline)** quanh nút khi focus. (Ô nhập và nút tròn của thanh trượt có chỉ báo focus riêng; cột picker tô accent 28% để chữ vẫn đọc được.)
+- Focus (highlight bằng d-pad): nền là **accent tối hơn**: **gradient `selection`** cho thanh, **màu phẳng `focusFill`** cho dòng (xem bảng màu), đặc, thay cho nền của chính phần tử, ở cả dark lẫn light. **Chữ và icon trong phần tử đó chuyển sang trắng** (`onAccent`). **Không vẽ viền (outline)** quanh nút khi focus. (Ô nhập và nút tròn của thanh trượt có chỉ báo focus riêng; cột picker tô accent 28% để chữ vẫn đọc được.)
 - Pressed: nền `pressedFill` (accent tối hơn nữa), nội dung cũng trắng.
 - Enter / d-pad center kích hoạt (từ `combinedClickable`), Space cũng kích hoạt.
 - Phím Menu gọi `onLongClick` nếu có (context menu).

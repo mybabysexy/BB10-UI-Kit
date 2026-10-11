@@ -338,7 +338,7 @@ private fun PrimaryActionItem(
             Modifier
                 .size(d.primaryActionSize)
                 .clip(CircleShape)
-                .background(c.accent)
+                .background(c.accentBrush)
                 // The label under the circle is not part of the button: name the button itself.
                 .semantics { contentDescription = action.label }
                 .bb10Clickable(

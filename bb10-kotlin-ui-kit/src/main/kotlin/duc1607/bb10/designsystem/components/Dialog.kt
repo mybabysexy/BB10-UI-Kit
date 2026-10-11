@@ -158,7 +158,9 @@ private fun DialogButton(
     Box(
         modifier
             .fillMaxHeight()
-            .background(if (filled) c.accent else c.surfaceVariant)
+            .then(
+                if (filled) Modifier.background(c.accentBrush) else Modifier.background(c.surfaceVariant)
+            )
             .bb10Clickable(
                 enabled = enabled,
                 role = Role.Button,

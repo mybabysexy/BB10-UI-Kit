@@ -108,6 +108,7 @@ fun Bb10ListItem(
                     role = if (checked != null) Role.Checkbox else Role.Button,
                     focusRequester = focusRequester,
                     highlight = highlight,
+                    flat = true,
                     // Menu key: let the app pick the item, then open the right-hand menu.
                     onLongClick = onLongClick?.let { cb ->
                         { cb(); menu?.open?.invoke() }
@@ -134,7 +135,7 @@ fun Bb10ListItem(
             if (shift > 0.dp) {
                 Box(Modifier.matchParentSize()) {
                     Box(
-                        Modifier.width(shift).fillMaxHeight().background(c.accent),
+                        Modifier.width(shift).fillMaxHeight().background(c.accentBrush),
                         contentAlignment = Alignment.Center,
                     ) {
                         Bb10Icon(Bb10Icons.Check, tint = c.onAccent, size = 20.dp)
@@ -204,13 +205,14 @@ fun Bb10LinkItem(
                     Modifier
                         .fillMaxWidth()
                         .heightIn(min = d.listItemMinHeight)
-                        .background(if (selected) c.accent else Color.Transparent)
+                        .background(if (selected) c.focusFill else Color.Transparent)
                         .semantics { this.selected = selected }
                         .bb10Clickable(
                             enabled = enabled,
                             role = Role.Button,
                             focusRequester = focusRequester,
                             highlight = highlight,
+                            flat = true,
                             onClick = onClick,
                         )
                         .padding(horizontal = d.spaceL, vertical = d.spaceS),

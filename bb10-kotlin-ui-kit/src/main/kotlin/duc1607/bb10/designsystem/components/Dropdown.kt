@@ -22,6 +22,7 @@ import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -134,7 +135,9 @@ fun Bb10DropdownPanel(
                 Modifier
                     .fillMaxWidth()
                     .height(DropdownBarHeight)
-                    .background(if (expanded) c.accent else c.field)
+                    .then(
+                        if (expanded) Modifier.background(c.accentBrush) else Modifier.background(c.field)
+                    )
                     .bb10HighlightFill(highlight)
                     .padding(horizontal = d.spaceM),
                 verticalAlignment = Alignment.CenterVertically,
@@ -215,9 +218,8 @@ private fun OptionList(
         inputMode.focusForKeys(selectedFocus)
     }
     val listState = rememberScrollState()
-    // Not-chosen options are grey; the chosen one stands out (white in the light theme).
+    // Not-chosen options are grey; the chosen one is the flat highlight blue, with white text.
     val idleFill = c.surfaceVariant
-    val chosenFill = if (c.isDark) c.divider else c.surface
     Box(
         Modifier
             .fillMaxWidth()
@@ -234,18 +236,21 @@ private fun OptionList(
                         .fillMaxWidth()
                         // Same height as the bar above.
                         .height(DropdownBarHeight)
-                        .background(if (isSelected) chosenFill else idleFill)
+                        .background(if (isSelected) c.focusFill else idleFill)
                         .semantics { this.selected = isSelected }
                         .bb10Clickable(
                             role = Role.Button,
                             focusRequester = if (isSelected) selectedFocus else null,
                             highlight = optionHighlight,
+                            flat = true,
                             onClick = { onChoose(index) },
                         )
                         .padding(horizontal = d.spaceM),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    Bb10OnHighlight(optionHighlight) {
+                    val forced = if (isSelected || optionHighlight.active) c.onAccent
+                    else LocalBb10ContentColor.current
+                    CompositionLocalProvider(LocalBb10ContentColor provides forced) {
                         Bb10Text(option, style = t.body, modifier = Modifier.weight(1f))
                         if (isSelected) Bb10Icon(Bb10Icons.Check)
                     }

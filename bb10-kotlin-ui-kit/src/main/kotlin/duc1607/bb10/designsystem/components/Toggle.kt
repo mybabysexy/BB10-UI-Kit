@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.semantics.Role
@@ -104,7 +105,7 @@ private fun ToggleTrack(checked: Boolean, highlighted: Boolean) {
             Modifier
                 .matchParentSize()
                 .clip(CircleShape)
-                .background(if (checked) c.accent else trackOff)
+                .background(brush = if (checked) c.accentBrush else SolidColor(trackOff))
         )
         Box(
             Modifier

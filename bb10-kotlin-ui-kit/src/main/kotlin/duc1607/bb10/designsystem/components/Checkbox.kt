@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.semantics
@@ -57,6 +58,7 @@ fun Bb10Checkbox(
                     role = Role.Checkbox,
                     focusRequester = focusRequester,
                     highlight = highlight,
+                    flat = true,
                     onClick = { onCheckedChange(!checked) },
                 )
                 .semantics { toggleableState = ToggleableState(checked) }
@@ -94,10 +96,10 @@ private fun CheckboxBox(checked: Boolean, modifier: Modifier = Modifier) {
         modifier
             .size(26.dp)
             .background(
-                when {
-                    onHighlight -> c.onAccent.copy(alpha = 0.25f)
-                    checked -> c.accent
-                    else -> unchecked
+                brush = when {
+                    onHighlight -> SolidColor(c.onAccent.copy(alpha = 0.25f))
+                    checked -> c.accentBrush
+                    else -> SolidColor(unchecked)
                 }
             ),
         contentAlignment = Alignment.Center,

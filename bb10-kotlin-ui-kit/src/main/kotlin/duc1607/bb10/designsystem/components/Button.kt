@@ -68,7 +68,9 @@ fun Bb10Button(
                 Modifier
                     .fillMaxWidth()
                     .height(DropdownBarHeight)
-                    .background(if (primary) c.accent else c.field)
+                    .then(
+                        if (primary) Modifier.background(c.accentBrush) else Modifier.background(c.field)
+                    )
                     .bb10HighlightFill(highlight)
                     .padding(horizontal = d.spaceM),
                 contentAlignment = Alignment.Center,

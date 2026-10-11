@@ -20,7 +20,9 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -81,11 +83,13 @@ fun Modifier.bb10HighlightFill(
     highlight: Bb10Highlight,
     circle: Boolean = false,
     slant: Dp = 0.dp,
+    /** A row (flat darker accent) rather than a bar (the selection gradient). */
+    flat: Boolean = false,
 ): Modifier {
     val colors = Bb10.colors
-    val fill = when {
-        highlight.pressed -> colors.pressedFill
-        highlight.focused -> colors.focusFill
+    val fill: Brush? = when {
+        highlight.pressed -> SolidColor(colors.pressedFill)
+        highlight.focused -> if (flat) SolidColor(colors.focusFill) else colors.selectionBrush
         else -> null
     }
     if (fill == null) return this
@@ -145,6 +149,8 @@ fun Modifier.bb10Clickable(
     highlight: Bb10Highlight = rememberBb10Highlight(),
     /** False when the fill is painted elsewhere with [bb10HighlightFill]. */
     paintHighlight: Boolean = true,
+    /** The item is a row (flat highlight), not a bar (gradient highlight). */
+    flat: Boolean = false,
     circle: Boolean = false,
     /**
      * Makes the right edge of the button lean: the top edge is [slant] longer than the bottom
@@ -176,7 +182,7 @@ fun Modifier.bb10Clickable(
             }
         }
         .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
-        .then(if (paintHighlight) Modifier.bb10HighlightFill(highlight, circle, slant) else Modifier)
+        .then(if (paintHighlight) Modifier.bb10HighlightFill(highlight, circle, slant, flat) else Modifier)
         .pointerInput(holdEnabled) {
             if (!holdEnabled) return@pointerInput
             awaitEachGesture {

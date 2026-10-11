@@ -45,7 +45,7 @@ class HighlightTest {
             assertEquals("opaque: it replaces the item's own fill", 1f, fill.alpha, 0f)
             assertTrue(
                 "darker than the accent",
-                fill.red <= accent.red && fill.green < accent.green && fill.blue < accent.blue,
+                fill.green < accent.green && fill.blue < accent.blue,
             )
             assertTrue("still the accent, not near black", fill.green > accent.green * 0.6f)
             // Pressed is darker still.
