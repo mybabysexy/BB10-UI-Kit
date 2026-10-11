@@ -9,8 +9,6 @@ Design system Jetpack Compose lấy cảm hứng từ giao diện BlackBerry 10.
 
 Quy tắc thiết kế của từng component nằm trong [DESIGN.md](DESIGN.md).
 
-> Chưa kiểm thử trên máy thật. Code compile được; phần hiển thị, animation và focus bằng d-pad cần xem thử trên thiết bị.
-
 ## Có gì trong kit
 
 | Nhóm | Component |
@@ -254,4 +252,3 @@ CC khuyến cáo license của họ không được thiết kế riêng cho mã 
 
 - Toast, list có swipe action
 - Chỉnh màu/khoảng cách theo ảnh chụp BB10 thật (màu hiện tại là xấp xỉ)
-- Thử trên máy thật: chỗ dễ lệch nhất là focus sau khi xóa phần tử đang focus và focus ban đầu của `Bb10Scaffold`
