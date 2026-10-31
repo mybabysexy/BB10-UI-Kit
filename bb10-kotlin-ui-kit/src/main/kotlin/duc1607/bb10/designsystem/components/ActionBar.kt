@@ -88,11 +88,8 @@ internal fun splitActions(actions: List<Bb10Action>, maxVisible: Int): ActionSlo
 /** Width of the "..." button at the far right (and of the matching spacer on the far left). */
 private val MoreButtonWidth = 52.dp
 
-/** The Back button is a little wider than the others: its right edge is the slash. */
-private val BackButtonWidth = 56.dp
-
 /** How far the slash leans: the button is this much narrower at the bottom than at the top. */
-private val BackSlashLean = 10.dp
+internal val BackSlashLean = 10.dp
 
 /** Action-bar icons are a touch larger than the regular icons, with room above the label. */
 private val ActionIconSize = 28.dp
@@ -144,7 +141,8 @@ internal fun Bb10ActionBar(
     }
     // Both ends are reserved when either exists, so the primary action stays centred.
     val sides = hasOverflow || leading != null
-    val sideWidth = if (leadingIsBack) BackButtonWidth else MoreButtonWidth
+    // Back: the slash leans out of a square, so the bottom edge is as long as the bar is tall.
+    val sideWidth = if (leadingIsBack) barHeight + BackSlashLean else MoreButtonWidth
 
     if (primary == null && slots.visible.isEmpty()) {
         // Nothing in the middle: no bar, just the side buttons as tiles in the corners.

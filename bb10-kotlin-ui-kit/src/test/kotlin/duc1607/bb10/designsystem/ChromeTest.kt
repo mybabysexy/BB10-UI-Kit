@@ -14,6 +14,8 @@ import androidx.compose.ui.test.performClick
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.height
 import androidx.compose.ui.unit.width
+import duc1607.bb10.designsystem.theme.Bb10
+import duc1607.bb10.designsystem.components.BackSlashLean
 import duc1607.bb10.designsystem.components.Bb10Action
 import duc1607.bb10.designsystem.components.Bb10NavItem
 import duc1607.bb10.designsystem.components.Bb10Scaffold
@@ -182,8 +184,10 @@ class ChromeTest {
 
     @Test
     fun backButtonHasItsSlantedEdge_andPrimaryStaysCentred() {
+        var expectedBackWidth = 0.dp
         rule.setContent {
             Bb10Theme(scale = rememberBb10UiScale()) {
+                expectedBackWidth = Bb10.dimens.actionBarHeight + BackSlashLean
                 Bb10Scaffold(
                     title = "Detail",
                     actions = listOf(
@@ -201,9 +205,9 @@ class ChromeTest {
         val more = rule.onNodeWithContentDescription("More").getUnclippedBoundsInRoot()
         val primary = rule.onNodeWithContentDescription("Open").getUnclippedBoundsInRoot()
 
-        // Back is a touch wider than the other buttons (its right edge is the slanted slash);
+        // Back is a square of the bar height plus the lean of its slanted right edge;
         // the "..." end keeps its 52dp and the primary stays in the middle.
-        assertEquals(56f, (back.right - back.left).value, 0.5f)
+        assertEquals(expectedBackWidth.value, (back.right - back.left).value, 0.5f)
         assertEquals(52f, (more.right - more.left).value, 0.5f)
         assertEquals(0f, back.left.value, 0.5f)
         assertEquals(160f, (primary.left + (primary.right - primary.left) / 2).value, 1f)
