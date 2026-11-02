@@ -206,7 +206,7 @@ Test chạy trên JVM (Robolectric + Compose UI test), không cần thiết bị
 ./gradlew :bb10-kotlin-ui-kit:testDebugUnitTest :catalog:testDebugUnitTest
 ```
 
-- `ScaffoldBehaviourTest`: d-pad từ header xuống item đầu, giữ item để menu peek rồi mở, d-pad đi được trong context menu (kể cả mở bằng cảm ứng), nút ☰ ở bottom bar đẩy app.
+- `ScaffoldBehaviourTest`: d-pad từ header xuống item đầu, giữ item để menu peek tới cột icon rồi mở, kéo tới icon rồi thả thì chạy mục đó, Delete nằm đáy còn các mục khác ở giữa, d-pad đi được trong context menu (kể cả mở bằng cảm ứng), nút ☰ ở bottom bar đẩy app.
 - `HighlightTest`: nền highlight là accent tối hơn, nội dung chuyển trắng khi focus và trở lại khi rời đi.
 - `TextFieldEditingTest`: d-pad đi qua ô nhập không bị kẹt, Enter / Space / chạm / gõ chữ mới vào ô, Enter ra khỏi ô, dialog nhập.
 - `AccessibilityAndLayoutTest`: primary luôn ở giữa (1, 2 action), phím Del kích hoạt Delete, tên cho nút chỉ có icon, heading, trạng thái toggle/selected, vùng chạm 48dp, cỡ hiển thị.
@@ -234,7 +234,7 @@ bb10-kotlin/
         Navigation.kt            Bb10NavItem + drawer bên trái
         TitleBar.kt              tiêu đề, Cancel/OK, nút mở drawer
         ListItem.kt              ListItem, LinkItem, Header, Marker
-        Menu.kt                  cầu nối giữa list item và menu phải (giữ để peek)
+        Menu.kt                  menu phải: giữ item để peek, kéo tới icon để chọn, bố cục các mục
         Tabs.kt                  tab cục bộ và dải tab dùng chung với header
         TextField.kt, Toggle.kt, Checkbox.kt, Dropdown.kt, Slider.kt
         Button.kt, Dialog.kt, ScalePicker.kt, Basics.kt

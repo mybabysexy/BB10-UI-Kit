@@ -36,6 +36,9 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.input.key.type
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.LayoutCoordinates
+import androidx.compose.ui.layout.onPlaced
 import androidx.compose.ui.semantics.Role
 import duc1607.bb10.designsystem.theme.Bb10
 import kotlinx.coroutines.withTimeoutOrNull
@@ -137,7 +140,12 @@ internal fun InputModeManager.focusForKeys(requester: FocusRequester) {
  * - [onHold] / [onHoldRelease] give the two phases of a touch press-and-hold: [onHold] fires as
  *   soon as the long-press time has passed with the finger still down, [onHoldRelease] when the
  *   finger lifts (the lift is then not a click). When [onHold] is set, touch no longer calls
- *   [onLongClick]; the Menu key still does.
+ *   [onLongClick]; the Menu key still does. In between, [onHoldMove] follows the finger, in root
+ *   coordinates.
+ * - [onMenu] makes it the item a right-hand menu ([LocalBb10Menu]) acts on: it is called to pick
+ *   the item, then the Menu key opens that menu, and a touch hold peeks it in, follows the finger
+ *   onto its icons and lets go of it, as [Bb10MenuController] describes. With no menu around it
+ *   is a plain [onLongClick].
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -159,15 +167,29 @@ fun Modifier.bb10Clickable(
     slant: Dp = 0.dp,
     onLongClick: (() -> Unit)? = null,
     onHold: (() -> Unit)? = null,
+    onHoldMove: ((Offset) -> Unit)? = null,
     onHoldRelease: (() -> Unit)? = null,
+    onMenu: (() -> Unit)? = null,
     onClick: () -> Unit,
 ): Modifier {
+    val menu = LocalBb10Menu.current
+    val longClick = when {
+        onMenu == null -> onLongClick
+        menu == null -> onMenu
+        else -> ({ onMenu(); menu.open() })
+    }
+    val hold = if (onMenu != null && menu != null) ({ onMenu(); menu.peek() }) else onHold
+    val holdMove = if (onMenu != null && menu != null) menu.move else onHoldMove
+    val holdRelease = if (onMenu != null && menu != null) menu.release else onHoldRelease
     val source = highlight.source
     val currentClick by rememberUpdatedState(onClick)
-    val currentLongClick by rememberUpdatedState(onLongClick)
-    val currentHold by rememberUpdatedState(onHold)
-    val currentHoldRelease by rememberUpdatedState(onHoldRelease)
-    val holdEnabled = enabled && onHold != null
+    val currentLongClick by rememberUpdatedState(longClick)
+    val currentHold by rememberUpdatedState(hold)
+    val currentHoldMove by rememberUpdatedState(holdMove)
+    val currentHoldRelease by rememberUpdatedState(holdRelease)
+    val holdEnabled = enabled && hold != null
+    // Where the element is, to tell the finger's place in root coordinates.
+    val placed = remember { arrayOfNulls<LayoutCoordinates>(1) }
 
     return this
         .alpha(if (enabled) 1f else 0.4f)
@@ -183,6 +205,7 @@ fun Modifier.bb10Clickable(
         }
         .then(if (focusRequester != null) Modifier.focusRequester(focusRequester) else Modifier)
         .then(if (paintHighlight) Modifier.bb10HighlightFill(highlight, circle, slant, flat) else Modifier)
+        .onPlaced { placed[0] = it }
         .pointerInput(holdEnabled) {
             if (!holdEnabled) return@pointerInput
             awaitEachGesture {
@@ -208,6 +231,10 @@ fun Modifier.bb10Clickable(
                     val change = event.changes.firstOrNull { it.id == down.id }
                     event.changes.forEach { it.consume() }
                     if (change == null || !change.pressed) break
+                    val coordinates = placed[0]
+                    if (coordinates != null && coordinates.isAttached) {
+                        currentHoldMove?.invoke(coordinates.localToRoot(change.position))
+                    }
                 }
                 currentHoldRelease?.invoke()
             }
@@ -217,7 +244,7 @@ fun Modifier.bb10Clickable(
             indication = null,
             enabled = enabled,
             role = role,
-            onLongClick = if (onHold != null) null else onLongClick,
+            onLongClick = if (hold != null) null else longClick,
             onClick = onClick,
         )
 }

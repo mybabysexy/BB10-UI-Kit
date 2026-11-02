@@ -51,8 +51,10 @@ import kotlinx.coroutines.delay
  *
  * - **right**: the menu with the [actions] that do not fit in the bar (the "..." button at the
  *   right end of the bar, the Menu key, or holding a list item that has `onLongClick`). It
- *   slides over the app: while a list item is held it only peeks in (about 2 mm) and the app is
- *   dimmed at once; when the finger lifts it opens fully.
+ *   slides over the app, its entries in the middle of the height and the destructive ones (Delete)
+ *   at the bottom. While a list item is held it only peeks in, as far as its icons, and the app is
+ *   dimmed at once; the finger can slide onto an icon (its entry slides out with the label) and
+ *   lifting it there runs that entry; lifting it anywhere else opens the menu fully.
  * - **left**: the app's own navigation menu, when [navigationItems] is not empty (the button at
  *   the left end of the action bar). It sits behind the app: the
  *   whole app UI is pushed to the right and dimmed to reveal it.
@@ -139,9 +141,26 @@ fun Bb10Scaffold(
         navOpen = true
     }
 
-    // List items talk to the right-hand menu through this (hold = peek, release = open).
+    // List items talk to the right-hand menu through this: hold = peek, then the entry the finger
+    // is let go on runs, or else the menu opens.
+    val hold = remember { Bb10MenuHold() }
     val menuController = remember(hasOverflow) {
-        if (hasOverflow) Bb10MenuController(peek = { peekOverflow() }, open = { openOverflow() }) else null
+        if (hasOverflow) {
+            Bb10MenuController(
+                peek = { peekOverflow() },
+                open = { openOverflow() },
+                move = hold::move,
+                release = {
+                    val picked = hold.end()
+                    if (picked != null && menuState == PanelState.Peek) {
+                        closeOverflow()
+                        picked.onClick()
+                    } else {
+                        openOverflow()
+                    }
+                },
+            )
+        } else null
     }
 
     // A page of a Bb10PushHost is focused by the host; do not grab focus in the screen behind.
@@ -299,6 +318,7 @@ fun Bb10Scaffold(
             Bb10OverflowMenu(
                 state = menuState,
                 actions = slots.overflow,
+                hold = hold,
                 showHints = showHints,
                 onDismiss = { closeOverflow() },
             )

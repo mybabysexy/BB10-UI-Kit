@@ -6,6 +6,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.input.InputMode
 import androidx.compose.ui.input.InputModeManager
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.key.Key
 import androidx.compose.ui.platform.LocalInputModeManager
 import androidx.compose.ui.test.ExperimentalTestApi
@@ -14,10 +15,13 @@ import androidx.compose.ui.test.assertIsFocused
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.center
 import androidx.compose.ui.test.down
+import androidx.compose.ui.test.moveTo
 import androidx.compose.ui.test.getUnclippedBoundsInRoot
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onAllNodesWithText
+import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performKeyInput
 import androidx.compose.ui.test.performTouchInput
@@ -50,6 +54,7 @@ class ScaffoldBehaviourTest {
     val rule = createComposeRule()
 
     private var heldItem: String? = null
+    private var deleted = false
 
     /**
      * What the window is like after a touch: in touch mode clickable items refuse focus (they
@@ -86,7 +91,7 @@ class ScaffoldBehaviourTest {
                     actions = listOf(
                         Bb10Action("compose", "Compose", Bb10Icons.Edit, primary = true) {},
                         Bb10Action("search", "Search", Bb10Icons.Search) {},
-                        Bb10Action("delete", "Delete", Bb10Icons.Delete) {},
+                        Bb10Action("delete", "Delete", Bb10Icons.Delete, destructive = true) { deleted = true },
                     ),
                     maxVisibleActions = maxVisibleActions,
                     navigationItems = if (withNavigation) {
@@ -148,18 +153,70 @@ class ScaffoldBehaviourTest {
         setScreen(withHeaderActions = false, maxVisibleActions = 2)
 
         // Finger down and held past the long-press time: the app is told which item, the menu
-        // is only peeking (its entries are still off screen) and nothing is open yet.
+        // only peeks in as far as its icons (the labels are still off screen) and nothing is
+        // open yet.
         rule.onNodeWithText("Item 2").performTouchInput { down(center) }
         rule.mainClock.advanceTimeBy(700)
         rule.waitForIdle()
         assertEquals("Item 2", heldItem)
-        rule.onNodeWithText("Delete").assertIsNotDisplayed()
+        val screenRight = rule.onRoot().getUnclippedBoundsInRoot().right
+        val entryLeft = rule.onNodeWithText("Delete").getUnclippedBoundsInRoot().left
+        assertTrue("only the icons should show", entryLeft > screenRight - 80.dp)
+        assertTrue("the icons should show", entryLeft < screenRight - 20.dp)
 
         // Lifting the finger slides the menu fully in.
         rule.onNodeWithText("Item 2").performTouchInput { up() }
         rule.mainClock.advanceTimeBy(600)
         rule.waitForIdle()
         rule.onNodeWithText("Delete").assertIsDisplayed()
+    }
+
+    @Test
+    fun lettingGoOnAnIconOfThePeekingMenuRunsItsEntry() {
+        setScreen(withHeaderActions = false, maxVisibleActions = 2)
+        rule.onNodeWithText("Item 2").performTouchInput { down(center) }
+        rule.mainClock.advanceTimeBy(700)
+        rule.waitForIdle()
+
+        // Slide the finger onto the Delete icon, then let go there.
+        val item = rule.onNodeWithText("Item 2").fetchSemanticsNode().boundsInRoot
+        // Its bounds run on past the edge of the screen: the icon is just right of its left edge.
+        val entry = rule.onNodeWithText("Delete").fetchSemanticsNode().boundsInRoot
+        val icon = Offset(entry.left + 20f, entry.center.y)
+        rule.onNodeWithText("Item 2").performTouchInput { moveTo(icon - item.topLeft) }
+        rule.mainClock.advanceTimeBy(500)
+        rule.waitForIdle()
+        // The entry under the finger slid out with its label: drawn a second time, over the menu.
+        val shown = rule.onAllNodesWithText("Delete").fetchSemanticsNodes()
+        assertEquals(2, shown.size)
+        val lefts = (0 until shown.size).map { rule.onAllNodesWithText("Delete")[it].getUnclippedBoundsInRoot().left }
+        val entryLeft = lefts.max()
+        // The entry's own row starts at the column of icons; the label of the one slid out is left of it.
+        assertTrue("the label should be out on screen: $lefts", lefts.min() < entryLeft)
+        rule.onNodeWithText("Item 2").performTouchInput { up() }
+        rule.mainClock.advanceTimeBy(600)
+        rule.waitForIdle()
+
+        assertEquals("Item 2", heldItem)
+        assertTrue("Delete should have run", deleted)
+        rule.onNodeWithText("Search").assertIsNotDisplayed()
+    }
+
+    @Test
+    fun destructiveEntriesSitAtTheBottomOfTheMenuAndTheOthersInTheMiddle() {
+        setScreen(withHeaderActions = false, maxVisibleActions = 1)
+        rule.onNodeWithText("Item 2").performTouchInput { down(center) }
+        rule.mainClock.advanceTimeBy(700)
+        rule.onNodeWithText("Item 2").performTouchInput { up() }
+        rule.mainClock.advanceTimeBy(600)
+        rule.waitForIdle()
+
+        val screen = rule.onRoot().getUnclippedBoundsInRoot()
+        val search = rule.onNodeWithText("Search").getUnclippedBoundsInRoot()
+        val delete = rule.onNodeWithText("Delete").getUnclippedBoundsInRoot()
+        val middle = (screen.top + screen.bottom) / 2
+        assertTrue("Search should be near the middle", search.top < middle && search.bottom > middle - 120.dp)
+        assertTrue("Delete should be at the bottom", screen.bottom - delete.bottom < 2.dp)
     }
 
     @Test
