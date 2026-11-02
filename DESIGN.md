@@ -146,9 +146,11 @@ Hai panel khác nhau về cách xuất hiện:
 
 **Menu bên phải** (`Bb10SidePanel`) trượt đè lên app:
 - Rộng `min(80% màn hình, 320dp)`, cao hết màn hình, nền `surface`.
-- Là nơi duy nhất cho các action không vừa bottom bar (Delete, Share, Settings...): các `Bb10LinkItem` xếp sát đáy, có icon và nhãn. Action nào tác động lên một item của list (như Delete) cũng nằm ở đây.
-- **Ba trạng thái**: ẩn, *peek* (chỉ thò ra 13dp, tương đương khoảng 2mm, **app đã được làm tối ngay lúc này** bằng `scrim`), mở hẳn (đã tối, nhận focus).
-- **Giữ một item của list** (touch): sau thời gian long-press, menu *peek* vào và **nền tối ngay** trong lúc còn giữ; **thả tay thì menu trượt hẳn vào**. Thả ra trước khi hết thời gian long-press hoặc kéo (cuộn) thì không có gì xảy ra. Thả tay sau khi giữ không tính là click.
+- Là nơi duy nhất cho các action không vừa bottom bar (Delete, Share, Settings...): các `Bb10LinkItem` có icon và nhãn (`Bb10MenuEntries`). Action nào tác động lên một item của list (như Delete) cũng nằm ở đây.
+- **Bố cục**: các mục nằm **giữa chiều cao** menu; riêng action phá huỷ (`Bb10Action.destructive`: Delete, Remove) nằm **sát đáy**, tách riêng bằng divider. Nhiều hơn chỗ thì cuộn.
+- **Ba trạng thái**: ẩn, *peek* (thò ra vừa đủ **cột icon**: `spaceL + iconSize + spaceS`, **app đã được làm tối ngay lúc này** bằng `scrim`), mở hẳn (đã tối, nhận focus).
+- **Giữ một item của list** (touch): sau thời gian long-press, menu *peek* vào và **nền tối ngay** trong lúc còn giữ. Vẫn giữ và **kéo ngón tay tới một icon** thì mục đó **trượt ra** sang trái kèm nhãn, có viền accent 3dp bên trái; **thả tay ở đó thì mục đó chạy** (menu đóng). **Thả tay ở chỗ khác thì menu trượt hẳn vào**. Thả ra trước khi hết thời gian long-press hoặc kéo (cuộn) thì không có gì xảy ra. Thả tay sau khi giữ không tính là click.
+- App không dùng `Bb10Scaffold` vẫn có được hành vi này: cung cấp `LocalBb10Menu` (`Bb10MenuController`: peek / open / move / release), giữ một `Bb10MenuHold`, vẽ `Bb10MenuEntries` trong panel của mình, và cho item dùng `bb10Clickable(onMenu = …)`.
 - Phím Menu trên item hoặc trên màn hình mở hẳn ngay (không peek).
 - Trượt vào 180ms, ra 120–150ms; nền mờ fade 150ms.
 - Focus bị giữ trong menu khi mở và rơi vào mục đầu (được tô highlight accent tối, chữ + icon trắng), rồi d-pad lên/xuống đi qua các mục. **Kể cả khi menu vừa mở bằng cách giữ ngón tay**: sau một cú chạm cửa sổ ở chế độ touch, nơi các phần tử bấm được từ chối focus lập trình, nên panel phải đòi chế độ bàn phím (`focusForKeys`) trước khi đặt focus. Đóng xong focus quay lại nút ⋮.

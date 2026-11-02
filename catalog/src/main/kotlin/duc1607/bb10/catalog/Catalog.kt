@@ -136,7 +136,7 @@ fun CatalogApp() {
                 Bb10Action("about", "About", Bb10Icons.Info, Key.A) { showAbout = true },
                 // Reloading is a menu item; there is no pull-to-refresh.
                 Bb10Action("refresh", "Refresh", Bb10Icons.Refresh, Key.R) {},
-                Bb10Action("reset", "Reset display size", Bb10Icons.Delete, Key.Delete) { scale.update(1f) },
+                Bb10Action("reset", "Reset display size", Bb10Icons.Delete, Key.Delete, destructive = true) { scale.update(1f) },
             ),
             maxVisibleActions = 2,
             navigationItems = sections.map { Bb10NavItem(it.title, it.icon, it.subtitle) },
@@ -322,7 +322,7 @@ private fun HeaderSection() {
 @Composable
 private fun ActionBarSection() {
     fun a(name: String, icon: ImageVector = Bb10Icons.Add, primary: Boolean = false) =
-        Bb10Action(name, name, icon, primary = primary) {}
+        Bb10Action(name, name, icon, primary = primary, destructive = name == "Delete") {}
 
     Note("The primary action is always exactly in the middle, bigger and floating above the bar.")
     Demo("Primary + 2 actions") {
@@ -396,7 +396,7 @@ private fun ActionBarSection() {
 @Composable
 private fun MenusSection() {
     var held by remember { mutableStateOf("nothing yet") }
-    Note("Touch: hold an item. The right menu peeks in about 2 mm and the app dims at once; when you let go it slides fully in.")
+    Note("Touch: hold an item. The right menu peeks in as far as its icons and the app dims at once. Slide the finger onto an icon and let go to run that entry; let go anywhere else and the menu slides fully in.")
     Note("Keys: Menu opens it, Del triggers Delete from anywhere, Back closes it.")
     Bb10ListHeader("Last held: $held")
     listOf("Linh", "Minh", "Tuấn").forEach { name ->

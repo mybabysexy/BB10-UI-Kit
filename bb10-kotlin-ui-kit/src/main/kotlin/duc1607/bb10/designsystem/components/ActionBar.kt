@@ -51,6 +51,8 @@ class Bb10Action(
     val shortcut: Key? = null,
     val enabled: Boolean = true,
     val primary: Boolean = false,
+    /** Delete, Remove: at the bottom of the right-hand menu, apart from the others. */
+    val destructive: Boolean = false,
     val onClick: () -> Unit,
 )
 
@@ -364,8 +366,10 @@ private fun PrimaryActionItem(
 
 /**
  * The right-hand menu: a panel that slides in from the right edge with the actions that did not
- * fit in the action bar. It peeks in while a list item is held and opens fully (dimming the app)
- * when the finger lifts or the Menu key / "..." is used. Focus is trapped inside while it is open
+ * fit in the action bar, in the middle of its height, with the destructive ones at the bottom. It
+ * peeks in as far as its icons while a list item is held (the entry the finger is let go on runs)
+ * and opens fully (dimming the app) when the finger lifts elsewhere or the Menu key / "..." is
+ * used. Focus is trapped inside while it is open
  * and lands on the first entry; Back / Menu / tapping the scrim / swiping it away close it.
  */
 @Composable
@@ -374,6 +378,7 @@ internal fun Bb10OverflowMenu(
     actions: List<Bb10Action>,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    hold: Bb10MenuHold? = null,
     showHints: Boolean = false,
 ) {
     val first = remember { FocusRequester() }
@@ -384,20 +389,16 @@ internal fun Bb10OverflowMenu(
         onDismiss = onDismiss,
         initialFocus = first,
         modifier = modifier,
-        bottomAligned = true,
     ) {
-        actions.forEachIndexed { index, a ->
-            Bb10LinkItem(
-                title = a.label,
-                icon = a.icon,
-                hint = if (showHints) a.shortcut?.hintLabel() else null,
-                enabled = a.enabled,
-                focusRequester = if (index == 0) first else null,
-                onClick = {
-                    onDismiss()
-                    a.onClick()
-                },
-            )
-        }
+        Bb10MenuEntries(
+            actions = actions,
+            hold = hold,
+            showHints = showHints,
+            firstFocus = first,
+            onPick = { a ->
+                onDismiss()
+                a.onClick()
+            },
+        )
     }
 }

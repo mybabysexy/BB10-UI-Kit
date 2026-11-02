@@ -9,15 +9,10 @@ import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -38,17 +33,14 @@ import duc1607.bb10.designsystem.theme.Bb10
 internal enum class PanelSide { Start, End }
 
 /**
- * Closed, peeking (a sliver of the panel is visible while a finger still holds a list item) or
+ * Closed, peeking (its column of icons is visible while a finger still holds a list item) or
  * fully open (dims the app and takes focus).
  */
 internal enum class PanelState { Hidden, Peek, Open }
 
-/** About 2 mm of physical screen: how far the panel slides in while a list item is held. */
-internal val PeekWidth = 13.dp
-
 /**
  * A panel that slides in over the screen from the left ([PanelSide.Start]) or right
- * ([PanelSide.End]) edge. In [PanelState.Peek] only [PeekWidth] of it shows, but the app behind
+ * ([PanelSide.End]) edge. In [PanelState.Peek] only [menuPeekWidth] of it shows, but the app behind
  * is already dimmed with the scrim; in [PanelState.Open] it is fully in, focus is trapped inside
  * and lands on [initialFocus]. Tapping the scrim or swiping the panel back toward its edge
  * dismisses it; Back / Menu are handled by [Bb10Scaffold].
@@ -62,8 +54,7 @@ internal fun Bb10SidePanel(
     onDismiss: () -> Unit,
     initialFocus: FocusRequester,
     modifier: Modifier = Modifier,
-    bottomAligned: Boolean = false,
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable () -> Unit,
 ) {
     val c = Bb10.colors
     val inputMode = LocalInputModeManager.current
@@ -73,7 +64,7 @@ internal fun Bb10SidePanel(
         val shown by animateDpAsState(
             targetValue = when (state) {
                 PanelState.Hidden -> 0.dp
-                PanelState.Peek -> PeekWidth
+                PanelState.Peek -> Bb10.dimens.menuPeekWidth
                 PanelState.Open -> panelWidth
             },
             animationSpec = tween(if (state == PanelState.Open) 180 else 120),
@@ -125,14 +116,7 @@ internal fun Bb10SidePanel(
                         .focusProperties { exit = { FocusRequester.Cancel } }
                         .focusGroup(),
                 ) {
-                    // More entries than fit: the list scrolls (and focus scrolls it into view).
-                    Column(
-                        Modifier
-                            .align(if (bottomAligned) Alignment.BottomStart else Alignment.TopStart)
-                            .fillMaxWidth()
-                            .verticalScroll(rememberScrollState()),
-                        content = content,
-                    )
+                    content()
                 }
             }
         }

@@ -46,7 +46,8 @@ private val CheckStripWidth = 44.dp
  * [onFocused] fires when the row takes focus (d-pad). [onLongClick] makes the row a context-menu
  * source: it is called when the row is held (or on the Menu key) so the app can remember which
  * item the menu acts on, and the enclosing [Bb10Scaffold]'s right-hand menu then opens: it peeks
- * in while the finger is held and slides fully in, dimming the app, when the finger lifts.
+ * in as far as its icons while the finger is held, runs the entry the finger is let go on, or
+ * else slides fully in when the finger lifts.
  */
 @Composable
 fun Bb10ListItem(
@@ -73,7 +74,6 @@ fun Bb10ListItem(
     val c = Bb10.colors
     val d = Bb10.dimens
     val t = Bb10.typography
-    val menu = LocalBb10Menu.current
     val isChecked = checked == true
     val highlight = rememberBb10Highlight()
     // The checked row moves aside to uncover the strip, and moves back when unchecked.
@@ -109,17 +109,9 @@ fun Bb10ListItem(
                     focusRequester = focusRequester,
                     highlight = highlight,
                     flat = true,
-                    // Menu key: let the app pick the item, then open the right-hand menu.
-                    onLongClick = onLongClick?.let { cb ->
-                        { cb(); menu?.open?.invoke() }
-                    },
-                    // Touch hold: the menu peeks in while held, opens fully on release.
-                    onHold = if (onLongClick != null && menu != null) {
-                        { onLongClick(); menu.peek() }
-                    } else null,
-                    onHoldRelease = if (onLongClick != null && menu != null) {
-                        { menu.open() }
-                    } else null,
+                    // The app picks the item, then the right-hand menu opens (Menu key) or
+                    // peeks in under the finger (touch hold).
+                    onMenu = onLongClick,
                     onClick = onClick,
                 )
                 // Over the highlight, so the "selected" mark stays visible on it.
